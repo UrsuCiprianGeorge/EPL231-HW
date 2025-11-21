@@ -1,4 +1,4 @@
-package omadiki;
+package omadiki.list_trie;
 
 public class CompressedTrie {
 	protected static class CompressedTrieNode {

@@ -1,6 +1,4 @@
-package omadiki;
-
-import omadiki.CompressedTrie.CompressedTrieNode;
+package omadiki.list_trie;
 
 public class SinglyLinkedList {
 	protected static class Node {
@@ -29,15 +27,11 @@ public class SinglyLinkedList {
 		this.head = null;
 	}
 	
-	public Node getHead() {
+	Node getHead() {
 		return head;
 	}
-	
-	public boolean isEmpty() {
-		return head == null;
-	}
-	
-	public void insert(Edge edge) {
+
+    public void insert(Edge edge) {
 		Node n = new Node(edge);
 		if (this.head == null) {
 			this.head = n;
