@@ -2,8 +2,9 @@ package omadiki.robin;
 
 public class CompressedTrie {
 	protected static class CompressedTrieNode {
-		private RobinHoodHashing hash;
-		public boolean isEndOfWord;
+        private RobinHoodHashing hash;
+		private boolean isEndOfWord;
+        private int importance;
 
 		public CompressedTrieNode() {
 			hash = new RobinHoodHashing();
@@ -69,26 +70,27 @@ public class CompressedTrie {
 		
 	}
 
-    /*
-	private static void print(CompressedTrie e) {
+	public static void print(CompressedTrie e) {
 		printRec(e.root, "");
 		System.out.println();
 	}
 
 	private static void printRec(CompressedTrieNode e, String word) {
-		if (cur == null) {
-			System.out.println(word);
-		} else if (e.isEndOfWord) {
-			System.out.println(word);
+		if (e == null) {
+            return;
+        }
+
+        if (e.isEndOfWord) {
+			System.out.println(String.format("%s:%d", word, e.importance));
 		}
 
-		while (cur != null) {
-			printRec(cur.edge.child, word + cur.edge.label);
-			cur = cur.next;
+		for (int i = 0; i < e.hash.capacity; i++) {
+            if (e.hash.table[i] == null) continue;
+			printRec(e.hash.table[i].child, word + e.hash.table[i].label);
 		}
-	}*/
+	}
 
-	boolean search(String a) {
+	public boolean search(String a) {
         return searchRec(this.root, a);
 	}
 
@@ -98,7 +100,9 @@ public class CompressedTrie {
         if (parent == null) {
             return false;
         } else if (parent.label.equals(word)) {
-            return parent.child.isEndOfWord;
+            boolean a = parent.child.isEndOfWord;
+            if (a) parent.child.importance++;
+            return a;
         } else  {
             String common = word.substring(findCommon(parent.label, word));
             return searchRec(parent.child, common);
@@ -119,25 +123,25 @@ public class CompressedTrie {
 		var a = new CompressedTrie();
 
 		a.insert("bear");
-		//print(a);
+		print(a);
 		
 		a.insert("bell");
-		//print(a);
+		print(a);
 		
 		a.insert("bid");
-		//print(a);
+		print(a);
 		
 		a.insert("be");
-		//print(a);
+		print(a);
 		
 		a.insert("bull");
-		//print(a);
+		print(a);
 		
 		a.insert("stock");
-		//print(a);
+		print(a);
 		
 		a.insert("stop");
-		//print(a);
+		print(a);
 
         System.out.println(a.search("patata"));
         System.out.println(a.search("stock"));

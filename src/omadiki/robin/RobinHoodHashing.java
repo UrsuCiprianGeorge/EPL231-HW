@@ -32,10 +32,25 @@ public class RobinHoodHashing {
     }
 
     public Edge getEdge(String s) {
-        return table[hash(s)];
+        int index = hash(s);
+        Edge e = table[index];
+        if (e == null) return null;
+        if (e.label.equals(s)) return e;
+
+        for (int i = index; circularDiff(i, index) <= maxProbeLength; index = (index + 1) % capacity) {
+            if (table[index] == null) continue;
+            if (table[index].label.equals(s)) return table[index];
+        }
+
+
+        return null;
     }
 
     public void insert(Edge edge) { // probelngth is index - hash (calculated circularly)
+        if (edge == null) {
+            return;
+        }
+
         int index = hash(edge.label);
         Edge cur = table[index];
         int curProbeLength = cur == null ? 0 : circularDiff(hash(cur.label), index);
@@ -53,10 +68,14 @@ public class RobinHoodHashing {
             curProbeLength = cur == null ? 0 : circularDiff(hash(cur.label), index);
         }
 
+        if (probeLength > maxProbeLength) {
+            maxProbeLength = probeLength;
+        }
+
         table[index] = edge;
         size++;
 
-        if (size >= (int) capacity * 0.9f) {
+        if (size >= (int) (capacity * 0.9f)) {
             rehash();
         }
     }
@@ -66,7 +85,23 @@ public class RobinHoodHashing {
     }
 
     public void rehash() {
+        int i;
+        for (i = 0; i <= PRIMES.length; i++) {
+            if (PRIMES[i] == capacity) {
+                break;
+            }
+        }
+        int oldCapacity = capacity;
+        capacity = PRIMES[i+1];
 
+        Edge[] oldTable = table;
+        table = new Edge[capacity];
+        maxProbeLength = 0;
+        size = 0;
+
+        for (int j = 0; j < oldCapacity; j++) {
+            insert(oldTable[j]);
+        }
     }
 
     public static void main(String[] args) {
