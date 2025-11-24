@@ -14,9 +14,9 @@ public class MinHeap {
             n = 1;
             resize = true;
         }
-        this.contents = new DictionaryWord[n];
+        this.contents = new DictionaryWord[n + 1];
         this.size = 0;
-        this.maxSize = n - 1;
+        this.maxSize = n;
     }
 
     public boolean isEmpty() {
@@ -40,6 +40,9 @@ public class MinHeap {
             this.size++;
             if (this.resize && size == maxSize) {
                 incrementContents();
+            }
+            if (!this.resize && size == maxSize) {
+                this.deleteMin();
             }
 
         }
