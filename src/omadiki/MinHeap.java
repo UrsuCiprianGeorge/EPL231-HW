@@ -41,23 +41,35 @@ public class MinHeap {
 
         if (this.size < this.capacity) {
             int index = this.size + 1;
-            while (index > 1 && this.contents[(index / 2)].compare(word) > 0) {
-                this.contents[index] = this.contents[(index / 2)];
-                index = index / 2;
+            if (!this.resize && index == capacity && getImportanceofWord(this.contents[1])<getImportanceofWord(word)) {
+                this.deleteMin();
+                index=index-1;
+            }
+            if(!this.resize&&index==capacity&&getImportanceofWord(this.contents[1])>getImportanceofWord(word)) {
+
+            }
+            else {
+
+
+                while (index > 1 && this.contents[(index / 2)].compare(word) > 0) {
+                    this.contents[index] = this.contents[(index / 2)];
+                    index = index / 2;
+                }
+
+                this.contents[index] = word;
+                this.size++;
+
+
+                if (this.resize && size == capacity - 1) {
+                    incrementContents();
+                }
             }
 
-            this.contents[index] = word;
-            this.size++;
-            if (this.resize && size == capacity-1) {
-                incrementContents();
-            }
-            if (!this.resize && size == capacity-1 && getImportanceofWord(this.contents[1])<getImportanceofWord(word)) {
-                this.deleteMin();
-                this.size--;
-            }
+
 
 
         }
+
     }
 
     public DictionaryWord deleteMin() {
