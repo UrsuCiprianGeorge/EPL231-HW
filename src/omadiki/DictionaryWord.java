@@ -24,6 +24,7 @@ public class DictionaryWord {
         return this.importance - word2.importance;
     }
 
+
     @Override
     public String toString() {
         return this.word + ":" + this.importance;
