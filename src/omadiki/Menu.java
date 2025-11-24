@@ -29,8 +29,9 @@ public final class Menu {
     }
 
 
-    private static void topKFrequentWordsWithPrefix(CompressedTrie trie, String prefix) {
-        //test 123
+    private static void topKFrequentWordsWithPrefix(CompressedTrie trie, String prefix,int k) {
+      
+        
     }
 
     private static void getAverageFrequencyOfPrefix(CompressedTrie trie, String prefix) {

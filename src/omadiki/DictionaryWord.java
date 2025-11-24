@@ -15,4 +15,8 @@ public class DictionaryWord {
     public int getImportance() {
         return importance;
     }
+
+    int compare (DictionaryWord word2){
+        return this.importance-word2.importance;
+    }
 }
