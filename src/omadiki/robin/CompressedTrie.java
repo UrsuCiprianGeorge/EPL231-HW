@@ -122,22 +122,29 @@ public class CompressedTrie {
         return i;
     }
 
-    public MinHeap getWordsWithPrefix(String prefix, int k) {
+    private CompressedTrieNode getPrefix(String prefix) { // returns the child node of the prefix word
         String search = prefix;
         CompressedTrieNode cur = this.root;
         RobinHoodHashing.Edge now;
         while (cur != null) {
             now = cur.hash.getEdge(search);
             if (now == null) {
-                return new MinHeap(0);
+                cur = null;
+                break;
             } else {
-                search = prefix.substring(findCommon(prefix, now.label), prefix.length());
+                search = search.substring(findCommon(search, now.label), search.length());
                 cur = now.child;
                 if (search.isEmpty()) {//if empty then we found the string
                     break;
                 }
             }
         }
+
+        return cur;
+    }
+
+    public MinHeap getWordsWithPrefix(String prefix, int k) {
+        CompressedTrieNode cur = getPrefix(prefix);
 
         MinHeap heap = new MinHeap(k);
         getWordsRec(cur, prefix, heap);
@@ -157,6 +164,23 @@ public class CompressedTrie {
             if (node.hash.table[i] == null) continue;
             getWordsRec(node.hash.table[i].child, word + node.hash.table[i].label, heap);
         }
+    }
+
+    public String predictNextLetter(String prefix) {
+        CompressedTrieNode cur = getPrefix(prefix);
+        int maxIndex = -1;
+        float max = 0;
+
+        for (int i = 0; i < cur.hash.capacity; i++) {
+            if (cur.hash.table[i] == null) continue;
+            MinHeap heap = getWordsWithPrefix(prefix + cur.hash.table[i].label, -1);
+            if (heap.getAvgFrequency() > max) {
+                max = heap.getAvgFrequency();
+                maxIndex = i;
+            }
+        }
+
+        return maxIndex == -1 ? "" : cur.hash.table[maxIndex].label;
     }
 
 	public static void main(String[] args) {		

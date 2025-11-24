@@ -55,7 +55,7 @@ public final class Menu {
     }
 
     private static void predictNextLetter(CompressedTrie trie, String prefix) {
-
+        System.out.println("Predict next letter: " + trie.predictNextLetter(prefix));
     }
 
 }
