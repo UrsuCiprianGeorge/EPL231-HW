@@ -1,5 +1,7 @@
 package omadiki;
 
+import java.util.Arrays;
+
 public class MinHeap {
 
     private DictionaryWord contents[];
@@ -9,7 +11,7 @@ public class MinHeap {
     public MinHeap(int n) {
         this.contents = new DictionaryWord[n];
         this.size = 0;
-        this.maxSize = -n - 1;
+        this.maxSize = n - 1;
     }
 
     public boolean isEmpty() {
@@ -28,8 +30,12 @@ public class MinHeap {
                 this.contents[index] = this.contents[(index / 2)];
                 index = index / 2;
             }
+
             this.contents[index] = word;
             this.size++;
+            if (size == maxSize) {
+                incrementContents();
+            }
 
         }
     }
@@ -57,6 +63,11 @@ public class MinHeap {
             this.contents[x] = last;
         }
         return min;
+    }
+
+    void incrementContents() {
+        this.maxSize = this.maxSize * 2;
+        this.contents = Arrays.copyOf(this.contents, this.maxSize);
     }
 
 }

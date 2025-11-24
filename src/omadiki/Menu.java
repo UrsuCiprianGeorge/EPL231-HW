@@ -29,7 +29,11 @@ public final class Menu {
     }
 
 
-    private static void topKFrequentWordsWithPrefix(CompressedTrie trie, String prefix,int k) {
+    private static void topKFrequentWordsWithPrefix(CompressedTrie trie, String prefix) {
+      int k=0;
+      System.out.println("Give k:");
+      Scanner sc= new Scanner(System.in);
+      k=sc.nextInt();
       
         
     }
