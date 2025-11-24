@@ -6,7 +6,7 @@ public class MinHeap {
 
     private DictionaryWord contents[];
     private int size;
-    private int maxSize;
+    private int capacity;
     private boolean resize;
 
     public MinHeap(int n) {
@@ -15,8 +15,8 @@ public class MinHeap {
             resize = true;
         }
         this.contents = new DictionaryWord[n + 1];
+        this.capacity = n + 1;
         this.size = 0;
-        this.maxSize = n;
     }
 
     public boolean isEmpty() {
@@ -24,12 +24,12 @@ public class MinHeap {
     }
 
     public boolean isFull() {
-        return this.size == this.maxSize;
+        return this.size == this.capacity;
     }
 
     public void insert(DictionaryWord word) {
 
-        if (this.size < this.maxSize) {
+        if (this.size < this.capacity) {
             int index = this.size + 1;
             while (index > 1 && this.contents[(index / 2)].compare(word) > 0) {
                 this.contents[index] = this.contents[(index / 2)];
@@ -38,10 +38,10 @@ public class MinHeap {
 
             this.contents[index] = word;
             this.size++;
-            if (this.resize && size == maxSize) {
+            if (this.resize && size == capacity-1) {
                 incrementContents();
             }
-            if (!this.resize && size == maxSize) {
+            if (!this.resize && size == capacity) {
                 this.deleteMin();
             }
 
@@ -74,8 +74,8 @@ public class MinHeap {
     }
 
     void incrementContents() {
-        this.maxSize = this.maxSize * 2;
-        this.contents = Arrays.copyOf(this.contents, this.maxSize);
+        this.capacity = this.capacity * 2;
+        this.contents = Arrays.copyOf(this.contents, this.capacity);
     }
 
     @Override

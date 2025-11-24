@@ -187,6 +187,17 @@ public class CompressedTrie {
         System.out.println(a.search("b"));
         System.out.println(a.search("stock"));
 
+
+
+        System.out.println(a.search("bid"));
+        System.out.println(a.search("bear"));
+        System.out.println(a.search("bell"));
+        System.out.println(a.search("bid"));
+        System.out.println(a.search("bell"));
+        System.out.println(a.search("bell"));
+
+
+
         System.out.println(a.getWordsWithPrefix("b", -1));
 
 		System.out.println();
