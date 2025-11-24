@@ -1,6 +1,7 @@
 package omadiki;
 
 import java.util.Arrays;
+import java.util.function.Consumer;
 
 public class MinHeap {
 
@@ -17,6 +18,10 @@ public class MinHeap {
         this.contents = new DictionaryWord[n + 1];
         this.capacity = n + 1;
         this.size = 0;
+    }
+
+    public int getSize() {
+        return this.size;
     }
 
     public boolean isEmpty() {
@@ -73,9 +78,15 @@ public class MinHeap {
         return min;
     }
 
-    void incrementContents() {
+    private void incrementContents() {
         this.capacity = this.capacity * 2;
         this.contents = Arrays.copyOf(this.contents, this.capacity);
+    }
+
+    public void traverseNodes(Consumer<DictionaryWord> consumer) {
+        for (int i = 1; i <= this.size; i++) {
+            consumer.accept(contents[i]);
+        }
     }
 
     @Override

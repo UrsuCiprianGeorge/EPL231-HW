@@ -1,6 +1,8 @@
 package omadiki;
 
 import java.util.Scanner;
+import java.util.concurrent.atomic.AtomicInteger;
+
 import omadiki.robin.CompressedTrie;
 
 public final class Menu {
@@ -16,6 +18,8 @@ public final class Menu {
             System.out.println("2 - Average frequency of prefix");
             System.out.println("3 - Predict next letter");
             func = sc.nextInt();
+            if (func == 0)
+                break;
             System.out.println("Enter a prefix: ");
             String prefix = sc.next();
 
@@ -24,7 +28,7 @@ public final class Menu {
                     topKFrequentWordsWithPrefix(trie, prefix);
                     break;
                 case 2:
-                    getAverageFrequencyOfPrefix(trie, prefix);
+                    System.out.println("Average frequency of prefix: " + getAverageFrequencyOfPrefix(trie, prefix));
                     break;
                 case 3:
                     predictNextLetter(trie, prefix);
@@ -45,8 +49,13 @@ public final class Menu {
 
     }
 
-    private static void getAverageFrequencyOfPrefix(CompressedTrie trie, String prefix) {
-
+    private static float getAverageFrequencyOfPrefix(CompressedTrie trie, String prefix) {
+        MinHeap heap = trie.getWordsWithPrefix(prefix, -1);
+        int size = heap.getSize();
+        AtomicInteger sum = new AtomicInteger(0);
+        heap.traverseNodes(dictionaryWord -> sum.addAndGet(dictionaryWord.getImportance()));
+        float avgFreq = size == 0 ? 0 : ((float) sum.get()) / size;
+        return avgFreq;
     }
 
     private static void predictNextLetter(CompressedTrie trie, String prefix) {
