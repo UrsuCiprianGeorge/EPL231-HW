@@ -28,7 +28,7 @@ public final class Menu {
                     topKFrequentWordsWithPrefix(trie, prefix);
                     break;
                 case 2:
-                    System.out.println("Average frequency of prefix: " + getAverageFrequencyOfPrefix(trie, prefix));
+                    getAverageFrequencyOfPrefix(trie, prefix);
                     break;
                 case 3:
                     predictNextLetter(trie, prefix);
@@ -49,13 +49,9 @@ public final class Menu {
 
     }
 
-    private static float getAverageFrequencyOfPrefix(CompressedTrie trie, String prefix) {
+    private static void getAverageFrequencyOfPrefix(CompressedTrie trie, String prefix) {
         MinHeap heap = trie.getWordsWithPrefix(prefix, -1);
-        int size = heap.getSize();
-        AtomicInteger sum = new AtomicInteger(0);
-        heap.traverseNodes(dictionaryWord -> sum.addAndGet(dictionaryWord.getImportance()));
-        float avgFreq = size == 0 ? 0 : ((float) sum.get()) / size;
-        return avgFreq;
+        System.out.println("Average frequency of prefix: " + heap.getAvgFrequency());
     }
 
     private static void predictNextLetter(CompressedTrie trie, String prefix) {

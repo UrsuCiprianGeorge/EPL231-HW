@@ -1,6 +1,7 @@
 package omadiki;
 
 import java.util.Arrays;
+import java.util.concurrent.atomic.AtomicInteger;
 import java.util.function.Consumer;
 
 public class MinHeap {
@@ -78,15 +79,13 @@ public class MinHeap {
         return min;
     }
 
-    private void incrementContents() {
-        this.capacity = this.capacity * 2;
-        this.contents = Arrays.copyOf(this.contents, this.capacity);
-    }
-
-    public void traverseNodes(Consumer<DictionaryWord> consumer) {
+    public float getAvgFrequency() {
+        int sum = 0;
         for (int i = 1; i <= this.size; i++) {
-            consumer.accept(contents[i]);
+            sum += this.contents[i].getImportance();
         }
+        float avgFreq = size == 0 ? 0 : ((float) sum) / size;
+        return avgFreq;
     }
 
     @Override
@@ -97,5 +96,10 @@ public class MinHeap {
             sb.append(this.contents[i]).append(", ");
         }
         return sb.toString();
+    }
+
+    private void incrementContents() {
+        this.capacity = this.capacity * 2;
+        this.contents = Arrays.copyOf(this.contents, this.capacity);
     }
 }
