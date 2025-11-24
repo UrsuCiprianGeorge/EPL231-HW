@@ -78,4 +78,13 @@ public class MinHeap {
         this.contents = Arrays.copyOf(this.contents, this.maxSize);
     }
 
+    @Override
+    public String toString() {
+        StringBuilder sb = new StringBuilder();
+        sb.append(this.size).append(", ");
+        for (int i = 1; i <= this.size; i++) {
+            sb.append(this.contents[i]).append(", ");
+        }
+        return sb.toString();
+    }
 }

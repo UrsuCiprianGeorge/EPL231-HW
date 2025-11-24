@@ -153,7 +153,10 @@ public class CompressedTrie {
             heap.insert(new DictionaryWord(word, node.importance));
         }
 
-
+        for (int i = 0; i < node.hash.capacity; i++) {
+            if (node.hash.table[i] == null) continue;
+            getWordsRec(node.hash.table[i].child, word + node.hash.table[i].label, heap);
+        }
     }
 
 	public static void main(String[] args) {		
@@ -183,6 +186,8 @@ public class CompressedTrie {
         System.out.println(a.search("patata"));
         System.out.println(a.search("b"));
         System.out.println(a.search("stock"));
+
+        System.out.println(a.getWordsWithPrefix("b", -1));
 
 		System.out.println();
 	}

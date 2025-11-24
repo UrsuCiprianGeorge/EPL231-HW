@@ -32,18 +32,7 @@ public class RobinHoodHashing {
     }
 
     public Edge getEdge(String s) {
-        int index = hash(s);
-        Edge e = table[index];
-        if (e == null) return null;
-        if (e.label.equals(s)) return e;
-
-        for (int i = index; circularDiff(i, index) <= maxProbeLength; index = (index + 1) % capacity) {
-            if (table[index] == null) continue;
-            if (table[index].label.equals(s)) return table[index];
-        }
-
-
-        return null;
+        return table[hash(s)];
     }
 
     public void insert(Edge edge) { // probelngth is index - hash (calculated circularly)
