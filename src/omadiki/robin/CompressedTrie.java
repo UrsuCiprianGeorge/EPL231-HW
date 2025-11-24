@@ -119,6 +119,8 @@ public class CompressedTrie {
         return i;
     }
 
+
+
 	public static void main(String[] args) {		
 		var a = new CompressedTrie();
 
@@ -144,6 +146,7 @@ public class CompressedTrie {
 		print(a);
 
         System.out.println(a.search("patata"));
+        System.out.println(a.search("b"));
         System.out.println(a.search("stock"));
 
 		System.out.println();
