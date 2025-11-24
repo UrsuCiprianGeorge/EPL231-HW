@@ -17,7 +17,10 @@ public class DictionaryWord {
         return importance;
     }
 
-    int compare (DictionaryWord word2){
-        return this.importance-word2.importance;
+    int compare(DictionaryWord word2) {
+        if (this.importance - word2.importance == 0) {
+            return this.word.compareTo(word2.word);
+        }
+        return this.importance - word2.importance;
     }
 }
