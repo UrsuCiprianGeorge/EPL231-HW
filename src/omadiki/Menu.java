@@ -20,22 +20,29 @@ public final class Menu {
             String prefix = sc.next();
 
             switch (func) {
-                case 1: topKFrequentWordsWithPrefix(trie, prefix); break;
-                case 2: getAverageFrequencyOfPrefix(trie, prefix); break;
-                case 3: predictNextLetter(trie, prefix); break;
+                case 1:
+                    topKFrequentWordsWithPrefix(trie, prefix);
+                    break;
+                case 2:
+                    getAverageFrequencyOfPrefix(trie, prefix);
+                    break;
+                case 3:
+                    predictNextLetter(trie, prefix);
+                    break;
             }
         } while (func != 0);
 
     }
 
-
     private static void topKFrequentWordsWithPrefix(CompressedTrie trie, String prefix) {
-        int k=0;
+        int k = 0;
         System.out.println("Give k:");
-        Scanner sc= new Scanner(System.in);
-        k=sc.nextInt();
-      
-        
+        Scanner sc = new Scanner(System.in);
+        k = sc.nextInt();
+        MinHeap heap=trie.getWordsWithPrefix(prefix, k);
+
+        System.out.print(heap);
+
     }
 
     private static void getAverageFrequencyOfPrefix(CompressedTrie trie, String prefix) {
@@ -45,7 +52,5 @@ public final class Menu {
     private static void predictNextLetter(CompressedTrie trie, String prefix) {
 
     }
-
-
 
 }

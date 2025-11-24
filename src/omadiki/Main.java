@@ -30,6 +30,7 @@ public final class Main {
         parseTxt(trie, txt);
 
         CompressedTrie.print(trie);
+        Menu.startMenu(trie);
 
     }
 
