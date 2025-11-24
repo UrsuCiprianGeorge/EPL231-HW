@@ -12,6 +12,7 @@ public class DictionaryWord {
     public String getWord() {
         return word;
     }
+
     public int getImportance() {
         return importance;
     }

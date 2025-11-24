@@ -1,5 +1,8 @@
 package omadiki.robin;
 
+import omadiki.DictionaryWord;
+import omadiki.MinHeap;
+
 public class CompressedTrie {
 	protected static class CompressedTrieNode {
         private RobinHoodHashing hash;
@@ -119,7 +122,39 @@ public class CompressedTrie {
         return i;
     }
 
+    public MinHeap getWordsWithPrefix(String prefix, int k) {
+        String search = prefix;
+        CompressedTrieNode cur = this.root;
+        RobinHoodHashing.Edge now;
+        while (cur != null) {
+            now = cur.hash.getEdge(search);
+            if (now == null) {
+                return new MinHeap(0);
+            } else {
+                search = prefix.substring(findCommon(prefix, now.label), prefix.length());
+                cur = now.child;
+                if (search.isEmpty()) {//if empty then we found the string
+                    break;
+                }
+            }
+        }
 
+        MinHeap heap = new MinHeap(k);
+        getWordsRec(cur, prefix, heap);
+
+        return heap;
+    }
+
+    private void getWordsRec(CompressedTrieNode node, String word, MinHeap heap) {
+        if (node == null) {
+            return;
+        }
+        if (node.isEndOfWord) {
+            heap.insert(new DictionaryWord(word, node.importance));
+        }
+
+
+    }
 
 	public static void main(String[] args) {		
 		var a = new CompressedTrie();

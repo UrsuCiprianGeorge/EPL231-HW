@@ -7,8 +7,13 @@ public class MinHeap {
     private DictionaryWord contents[];
     private int size;
     private int maxSize;
+    private boolean resize;
 
     public MinHeap(int n) {
+        if (n == -1) {
+            n = 1;
+            resize = true;
+        }
         this.contents = new DictionaryWord[n];
         this.size = 0;
         this.maxSize = n - 1;
@@ -33,7 +38,7 @@ public class MinHeap {
 
             this.contents[index] = word;
             this.size++;
-            if (size == maxSize) {
+            if (this.resize && size == maxSize) {
                 incrementContents();
             }
 
