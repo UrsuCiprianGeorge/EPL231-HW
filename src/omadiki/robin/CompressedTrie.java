@@ -160,7 +160,7 @@ public class CompressedTrie {
         Pair<CompressedTrieNode, String> cur = getPrefix(prefix);
 
         MinHeap heap = new MinHeap(k);
-        getWordsRec(cur.getLeft(), prefix, heap);
+        getWordsRec(cur.getLeft(), prefix + cur.getRight(), heap);
 
         return heap;
     }

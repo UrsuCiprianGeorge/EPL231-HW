@@ -1,12 +1,10 @@
 package omadiki;
 
 import java.util.Arrays;
-import java.util.concurrent.atomic.AtomicInteger;
-import java.util.function.Consumer;
 
 public class MinHeap {
 
-    private DictionaryWord contents[];
+    private DictionaryWord[] contents;
     private int size;
     private int capacity;
     private boolean resize;
@@ -38,14 +36,13 @@ public class MinHeap {
 
         if (this.size < this.capacity) {
             int index = this.size + 1;
-            if (!this.resize && index == capacity && this.contents[1].getImportance()<word.getImportance()) {
+            if (!this.resize && index == capacity && this.contents[1].getImportance() < word.getImportance()) {
                 this.deleteMin();
-                index=index-1;
+                index = index - 1;
             }
-            if(!this.resize&&index==capacity&&this.contents[1].getImportance()>word.getImportance()) {
+            if (!this.resize && index == capacity && this.contents[1].getImportance() > word.getImportance()) {
 
-            }
-            else {
+            } else {
 
 
                 while (index > 1 && this.contents[(index / 2)].compare(word) > 0) {
@@ -61,8 +58,6 @@ public class MinHeap {
                     incrementContents();
                 }
             }
-
-
 
 
         }
