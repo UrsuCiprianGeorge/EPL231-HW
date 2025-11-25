@@ -29,9 +29,6 @@ public class MinHeap {
         return this.size == 0;
     }
 
-    private int getImportanceofWord(DictionaryWord word) {
-        return word.getImportance();
-    }
 
     public boolean isFull() {
         return this.size == this.capacity;
@@ -41,11 +38,11 @@ public class MinHeap {
 
         if (this.size < this.capacity) {
             int index = this.size + 1;
-            if (!this.resize && index == capacity && getImportanceofWord(this.contents[1])<getImportanceofWord(word)) {
+            if (!this.resize && index == capacity && this.contents[1].getImportance()<word.getImportance()) {
                 this.deleteMin();
                 index=index-1;
             }
-            if(!this.resize&&index==capacity&&getImportanceofWord(this.contents[1])>getImportanceofWord(word)) {
+            if(!this.resize&&index==capacity&&this.contents[1].getImportance()>word.getImportance()) {
 
             }
             else {
