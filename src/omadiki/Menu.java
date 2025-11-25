@@ -45,7 +45,7 @@ public final class Menu {
         k = sc.nextInt();
         MinHeap heap=trie.getWordsWithPrefix(prefix, k);
 
-        System.out.print(heap);
+        System.out.println(heap);
 
     }
 
@@ -55,7 +55,11 @@ public final class Menu {
     }
 
     private static void predictNextLetter(CompressedTrie trie, String prefix) {
-        System.out.println("Predict next letter: " + trie.predictNextLetter(prefix));
+        char l = trie.predictNextLetter(prefix);
+        if (l == 0)
+            System.out.println("No larger words exist");
+        else
+            System.out.println("Predict next letter: " + l);
     }
 
 }

@@ -17,13 +17,12 @@ public class DictionaryWord {
         return importance;
     }
 
-    int compare(DictionaryWord word2) {
-        if (this.importance - word2.importance == 0) {
-            return this.word.compareTo(word2.word);
+    public int compare(DictionaryWord other) {
+        if (this.importance - other.importance == 0) {
+            return this.word.compareTo(other.word);
         }
-        return this.importance - word2.importance;
+        return this.importance - other.importance;
     }
-
 
     @Override
     public String toString() {

@@ -2,6 +2,7 @@ package omadiki.robin;
 
 import omadiki.DictionaryWord;
 import omadiki.MinHeap;
+import omadiki.Pair;
 
 public class CompressedTrie {
 	protected static class CompressedTrieNode {
@@ -122,32 +123,44 @@ public class CompressedTrie {
         return i;
     }
 
-    private CompressedTrieNode getPrefix(String prefix) { // returns the child node of the prefix word
+    /**
+     * Given a prefix, it parses the trie until it finds the node that corresponds to that prefix.
+     * Sometimes an edge may contain characters that are not in the prefix prompted (e.g. prefix = "app", edge = "appl").
+     * So we need a way to get the remaining characters ("l" in this example), hence,
+     * it returns a Pair of the children of that node, along with a string that contains all remaining characters from that edge.
+     *
+     * @param prefix the prefix to search for.
+     * @return Pair of the child node and the remaining string.
+     */
+    private Pair<CompressedTrieNode, String> getPrefix(String prefix) {
         String search = prefix;
+        String remainder = "";
         CompressedTrieNode cur = this.root;
-        RobinHoodHashing.Edge now;
+        RobinHoodHashing.Edge edge = null;
         while (cur != null) {
-            now = cur.hash.getEdge(search);
-            if (now == null) {
+            edge = cur.hash.getEdge(search);
+            if (edge == null) {
                 cur = null;
                 break;
             } else {
-                search = search.substring(findCommon(search, now.label), search.length());
-                cur = now.child;
+                int common = findCommon(search, edge.label);
+                remainder = edge.label.substring(common, edge.label.length());
+                search = search.substring(common, search.length());
+                cur = edge.child;
                 if (search.isEmpty()) {//if empty then we found the string
                     break;
                 }
             }
         }
 
-        return cur;
+        return new Pair<>(cur, remainder);
     }
 
     public MinHeap getWordsWithPrefix(String prefix, int k) {
-        CompressedTrieNode cur = getPrefix(prefix);
+        Pair<CompressedTrieNode, String> cur = getPrefix(prefix);
 
         MinHeap heap = new MinHeap(k);
-        getWordsRec(cur, prefix, heap);
+        getWordsRec(cur.getLeft(), prefix, heap);
 
         return heap;
     }
@@ -166,21 +179,27 @@ public class CompressedTrie {
         }
     }
 
-    public String predictNextLetter(String prefix) {
-        CompressedTrieNode cur = getPrefix(prefix);
+    public char predictNextLetter(String prefix) {
+        Pair<CompressedTrieNode, String> pair = getPrefix(prefix);
+        if (!pair.getRight().isEmpty()) {
+            return pair.getRight().charAt(0);
+        }
+
+        CompressedTrieNode cur = pair.getLeft();
         int maxIndex = -1;
         float max = 0;
 
         for (int i = 0; i < cur.hash.capacity; i++) {
             if (cur.hash.table[i] == null) continue;
             MinHeap heap = getWordsWithPrefix(prefix + cur.hash.table[i].label, -1);
-            if (heap.getAvgFrequency() > max) {
-                max = heap.getAvgFrequency();
+            float freq = heap.getAvgFrequency();
+            if (freq > max) {
+                max = freq;
                 maxIndex = i;
             }
         }
 
-        return maxIndex == -1 ? "" : cur.hash.table[maxIndex].label;
+        return maxIndex == -1 ? '\0' : cur.hash.table[maxIndex].label.charAt(0);
     }
 
 	public static void main(String[] args) {		
@@ -219,7 +238,6 @@ public class CompressedTrie {
         System.out.println(a.search("bid"));
         System.out.println(a.search("bell"));
         System.out.println(a.search("bell"));
-
 
 
         System.out.println(a.getWordsWithPrefix("b", -1));
