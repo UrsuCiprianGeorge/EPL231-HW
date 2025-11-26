@@ -15,30 +15,24 @@ public class DictionaryMaker {
         }
 
 
-        int[] wordlengths = new int[34];
-        int[][] letter;
+        int[] wordlengths = new int[31];
+        int[][] letter = new int[31][26];
 
-
+        int lines = 0;
 
         try (BufferedReader reader = Files.newBufferedReader(Path.of(wordsFile.toURI()))) {
             String line;
             while ((line = reader.readLine()) != null) {
-                String[] parts = line.split("\t");
-                String col1 = parts[0];
-                long col2 = Long.parseLong(parts[1]);
-
-
-
-
-
-
-
+                lines++;
+                int size = line.length();
+                wordlengths[size-1]++;
+                for (int i = 0; i < size; i++) {
+                    letter[size-1][line.charAt(i)-'a']++;
+                }
 
             }
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
-
-
     }
 }
