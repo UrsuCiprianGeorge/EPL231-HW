@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.nio.MappedByteBuffer;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.util.Random;
 
 public class DictionaryMaker {
 
@@ -25,14 +26,89 @@ public class DictionaryMaker {
             while ((line = reader.readLine()) != null) {
                 lines++;
                 int size = line.length();
-                wordlengths[size-1]++;
+                wordlengths[size - 1]++;
                 for (int i = 0; i < size; i++) {
-                    letter[size-1][line.charAt(i)-'a']++;
+                    letter[i][line.charAt(i) - 'a']++;
                 }
 
             }
         } catch (IOException e) {
             throw new RuntimeException(e);
+        }
+
+        random_dictionary_generator(wordlengths, letter);
+
+    }
+
+    public static void random_dictionary_generator_fixed(int[] wordlength, int[][] letter, int length) {
+
+        Random rand = new Random();
+
+        for (int i = 0; i < 100; i++) {
+
+            for (int k = 0; k < length; k++) {
+                int j;
+                int weightSum = 0;
+                for (j = 0; j < 26; j++) {
+                    weightSum += letter[k][j];
+                }
+
+                int rnd = rand.nextInt(weightSum);
+                for (j = 0; j < 26; j++) {
+                    if (rnd < letter[k][j]) {
+                        break;
+                    }
+                    rnd -= letter[k][j];
+                }
+
+                System.out.print((char) (j + 'a'));
+            }
+            System.out.println();
+        }
+    }
+
+    public static void random_dictionary_generator(int[] wordlength, int[][] letter) {
+        Random rand = new Random();
+
+        for (int i = 0; i < 10000; i++) {
+            int length;
+
+            {
+                int j;
+                int weightSum = 0;
+                for (j = 0; j < 31; j++) {
+                    weightSum += wordlength[j];
+                }
+
+                int rnd = rand.nextInt(weightSum);
+                for (j = 0; j < 31; j++) {
+                    if (rnd < wordlength[j]) {
+                        break;
+                    }
+                    rnd -= wordlength[j];
+                }
+
+                length = j;
+            }
+
+            for (int k = 0; k < length; k++) {
+                int j;
+                int weightSum = 0;
+                for (j = 0; j < 26; j++) {
+                    weightSum += letter[k][j];
+                }
+
+                int rnd = rand.nextInt(weightSum);
+                for (j = 0; j < 26; j++) {
+                    if (rnd < letter[k][j]) {
+                        break;
+                    }
+                    rnd -= letter[k][j];
+                }
+
+                //System.out.print((char) (j + 'a'));
+            }
+            //System.out.println();
         }
     }
 }
