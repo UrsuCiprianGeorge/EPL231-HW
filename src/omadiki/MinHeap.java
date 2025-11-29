@@ -94,8 +94,49 @@ public class MinHeap {
         for (int i = 1; i <= this.size; i++) {
             sum += this.contents[i].getImportance();
         }
-        float avgFreq = size == 0 ? 0 : ((float) sum) / size;
-        return avgFreq;
+        return size == 0 ? 0 : ((float) sum) / size;
+    }
+
+    private int partition(DictionaryWord[] word, int low, int high) {
+        DictionaryWord pivot = word[high];
+        int i = low - 1;
+        for (int j = low; j < high; j++) {
+            if(word[j].compare(pivot)>0){
+                i++;
+                swap(word,i,j);
+            }
+        }
+
+        swap(word,i+1,high);
+        return i+1;
+    }
+
+    private static void swap(DictionaryWord[] word , int i , int j){
+        DictionaryWord temp = word[i];
+        word[i]=word[j];
+        word[j]=temp;
+    }
+
+    private void quicksort(DictionaryWord[] arr, int low, int high) {
+        if (low >= high) return;
+
+       int pivotIndex= partition(arr,low,high);
+
+       quicksort(arr, low, pivotIndex-1);
+       quicksort(arr, pivotIndex, high);
+    }
+
+    private DictionaryWord[] getContentsCopy() {
+        DictionaryWord[] n = new DictionaryWord[size];
+        for (int i = 0; i < this.size; i++)
+            n[i] = this.contents[i+1];
+        return n;
+    }
+
+    public DictionaryWord[] getSorted() {
+        DictionaryWord[] a = getContentsCopy();
+        quicksort(a, 0, a.length-1);
+        return a;
     }
 
     @Override
@@ -112,4 +153,5 @@ public class MinHeap {
         this.capacity = this.capacity * 2;
         this.contents = Arrays.copyOf(this.contents, this.capacity);
     }
+
 }

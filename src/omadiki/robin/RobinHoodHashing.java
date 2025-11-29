@@ -7,7 +7,7 @@ public class RobinHoodHashing {
     protected static class Edge {
         String label;
         CompressedTrie.CompressedTrieNode child;
-
+        boolean occupied = true;
 
         public Edge(String label, CompressedTrie.CompressedTrieNode child) {
             this.label = label;
@@ -18,7 +18,6 @@ public class RobinHoodHashing {
     Edge[] table;
     int capacity, size;
     int maxProbeLength;
-
 
     public RobinHoodHashing() {
         this.capacity = 3;
@@ -31,7 +30,7 @@ public class RobinHoodHashing {
         return (s.charAt(0) - 'a') % capacity;
     }
 
-    public Edge getEdge(String s) {
+    Edge getEdge(String s) {
         int index = hash(s);
         Edge e = table[index];
         if (e == null) return null;
@@ -45,7 +44,7 @@ public class RobinHoodHashing {
         return null;
     }
 
-    public void insert(Edge edge) { // probelngth is index - hash (calculated circularly)
+    void insert(Edge edge) { // probelngth is index - hash (calculated circularly)
         if (edge == null) {
             return;
         }
@@ -83,7 +82,7 @@ public class RobinHoodHashing {
         return a <= b ? b-a : capacity-a+b;
     }
 
-    public void rehash() {
+    private void rehash() {
         int i;
         for (i = 0; i <= PRIMES.length; i++) {
             if (PRIMES[i] == capacity) {

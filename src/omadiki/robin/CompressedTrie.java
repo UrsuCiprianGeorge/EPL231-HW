@@ -16,7 +16,7 @@ public class CompressedTrie {
 		}
 
 		public void insertEdge(RobinHoodHashing.Edge edge) {
-            this.isEndOfWord = false;
+            //this.isEndOfWord = false;
 			hash.insert(edge);
 		}
 
@@ -73,6 +73,10 @@ public class CompressedTrie {
         }
 		
 	}
+
+    public void delete(String word) {
+        
+    }
 
 	public static void print(CompressedTrie e) {
 		printRec(e.root, "");

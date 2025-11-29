@@ -38,15 +38,18 @@ public final class Menu {
 
     }
 
+
+
     private static void topKFrequentWordsWithPrefix(CompressedTrie trie, String prefix) {
-        int k = 0;
+        int k;
         System.out.println("Give k:");
         Scanner sc = new Scanner(System.in);
         k = sc.nextInt();
         MinHeap heap=trie.getWordsWithPrefix(prefix, k);
 
-        System.out.println(heap);
-
+        DictionaryWord[] a = heap.getSorted();
+        for (DictionaryWord b : a)
+            System.out.println(b);
     }
 
     private static void getAverageFrequencyOfPrefix(CompressedTrie trie, String prefix) {
