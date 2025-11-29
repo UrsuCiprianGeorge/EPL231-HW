@@ -6,7 +6,7 @@ import omadiki.Pair;
 
 public class CompressedTrie {
 	protected static class CompressedTrieNode {
-        private RobinHoodHashing hash;
+        private final RobinHoodHashing hash;
 		private boolean isEndOfWord;
         private int importance;
 
@@ -27,6 +27,25 @@ public class CompressedTrie {
 	public CompressedTrie() {
 		root = new CompressedTrieNode();
 	}
+
+    public boolean search(String a) {
+        return searchRec(this.root, a);
+    }
+
+    private boolean searchRec(CompressedTrieNode node, String word) {
+        RobinHoodHashing.Edge parent = node.hash.getEdge(word);
+
+        if (parent == null) {
+            return false;
+        } else if (parent.label.equals(word)) {
+            boolean a = parent.child.isEndOfWord;
+            if (a) parent.child.importance++;
+            return a;
+        } else {
+            String common = word.substring(findCommon(parent.label, word));
+            return searchRec(parent.child, common);
+        }
+    }
 
 	public void insert(String word) {
 		insertRec(this.root, word);
@@ -62,8 +81,7 @@ public class CompressedTrie {
             parent.label = common;
 
             CompressedTrieNode old = parent.child;
-            CompressedTrieNode neww = new CompressedTrieNode();
-            parent.child = neww;
+            parent.child = new CompressedTrieNode();
 
             insertRec(parent.child, parentSubstring);
 
@@ -71,11 +89,27 @@ public class CompressedTrie {
 
             insertRec(parent.child, wordSubstring);
         }
-		
 	}
 
-    public void delete(String word) {
-        
+    public boolean delete(String word) {
+        return deleteRec(this.root, word);
+    }
+
+    private boolean deleteRec(CompressedTrieNode node, String word) {
+        RobinHoodHashing.Edge parent = node.hash.getEdge(word);
+
+        if (parent == null) {
+            return false;
+        } else if (parent.label.equals(word)) {
+            if (!parent.child.isEndOfWord)
+                return false;
+            parent.child.isEndOfWord = false;
+            parent.occupied = false;
+            return true;
+        } else {
+            String common = word.substring(findCommon(parent.label, word));
+            return deleteRec(parent.child, common);
+        }
     }
 
 	public static void print(CompressedTrie e) {
@@ -97,25 +131,6 @@ public class CompressedTrie {
 			printRec(e.hash.table[i].child, word + e.hash.table[i].label);
 		}
 	}
-
-	public boolean search(String a) {
-        return searchRec(this.root, a);
-	}
-
-    private boolean searchRec(CompressedTrieNode node, String word) {
-        RobinHoodHashing.Edge parent = node.hash.getEdge(word);
-
-        if (parent == null) {
-            return false;
-        } else if (parent.label.equals(word)) {
-            boolean a = parent.child.isEndOfWord;
-            if (a) parent.child.importance++;
-            return a;
-        } else  {
-            String common = word.substring(findCommon(parent.label, word));
-            return searchRec(parent.child, common);
-        }
-    }
 
     private static int findCommon(String s1, String s2) {
         int i = 0;
@@ -238,9 +253,12 @@ public class CompressedTrie {
 
         System.out.println(a.search("bid"));
         System.out.println(a.search("bear"));
-        System.out.println(a.search("bell"));
         System.out.println(a.search("bid"));
         System.out.println(a.search("bell"));
+
+        a.delete("bell");
+        System.out.println("After del:");
+        print(a);
         System.out.println(a.search("bell"));
 
 

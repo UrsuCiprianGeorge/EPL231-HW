@@ -37,7 +37,8 @@ public class RobinHoodHashing {
         if (e.label.charAt(0) == s.charAt(0)) return e;
 
         for (int i = index; circularDiff(i, index) <= maxProbeLength; index = (index + 1) % capacity) {
-            if (table[index] == null) continue;
+            if (table[index] == null) break;
+            if (!table[index].occupied) continue;
             if (table[index].label.charAt(0) == s.charAt(0)) return table[index];
         }
 

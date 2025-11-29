@@ -27,7 +27,6 @@ public class MinHeap {
         return this.size == 0;
     }
 
-
     public boolean isFull() {
         return this.size == this.capacity;
     }
@@ -36,32 +35,31 @@ public class MinHeap {
 
         if (this.size < this.capacity) {
             int index = this.size + 1;
-            if (!this.resize && index == capacity && this.contents[1].getImportance() < word.getImportance()) {
-                this.deleteMin();
-                index = index - 1;
-            }
-            if (!this.resize && index == capacity && this.contents[1].getImportance() > word.getImportance()) {
 
-            } else {
-
-
-                while (index > 1 && this.contents[(index / 2)].compare(word) > 0) {
-                    this.contents[index] = this.contents[(index / 2)];
-                    index = index / 2;
-                }
-
-                this.contents[index] = word;
-                this.size++;
-
-
-                if (this.resize && size == capacity - 1) {
-                    incrementContents();
+            if (!this.resize && index == capacity) {
+                if (this.contents[1].getImportance() < word.getImportance()) {
+                    // Case 1: New word is more important than the minimum. Replace the minimum.
+                    this.deleteMin();
+                    index--; // Slot previously occupied by the minimum is now available
+                } else {
+                    // Case 2: New word is less important than or equal to the minimum. Do not insert.
+                    return;
                 }
             }
 
+            while (index > 1 && this.contents[(index / 2)].compare(word) > 0) {
+                this.contents[index] = this.contents[(index / 2)];
+                index = index / 2;
+            }
 
+            this.contents[index] = word;
+            this.size++;
+
+
+            if (this.resize && size == capacity - 1) {
+                incrementContents();
+            }
         }
-
     }
 
     public DictionaryWord deleteMin() {
@@ -153,5 +151,4 @@ public class MinHeap {
         this.capacity = this.capacity * 2;
         this.contents = Arrays.copyOf(this.contents, this.capacity);
     }
-
 }

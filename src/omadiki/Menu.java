@@ -9,7 +9,7 @@ public final class Menu {
 
     public static void startMenu(CompressedTrie trie) {
         Scanner sc = new Scanner(System.in);
-        int func = 0;
+        int func;
 
         do {
             System.out.println("Welcome. Enter one of the numbers below to continue: ");
@@ -34,11 +34,9 @@ public final class Menu {
                     predictNextLetter(trie, prefix);
                     break;
             }
-        } while (func != 0);
+        } while (true);
 
     }
-
-
 
     private static void topKFrequentWordsWithPrefix(CompressedTrie trie, String prefix) {
         int k;
@@ -49,7 +47,7 @@ public final class Menu {
 
         DictionaryWord[] a = heap.getSorted();
         for (DictionaryWord b : a)
-            System.out.println(b);
+            System.out.println(b.getWord());
     }
 
     private static void getAverageFrequencyOfPrefix(CompressedTrie trie, String prefix) {

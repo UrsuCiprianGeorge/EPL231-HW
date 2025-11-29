@@ -11,7 +11,7 @@ public class CompressedTrie {
 		}
 
 		public void insertEdge(SinglyLinkedList.Edge edge) {
-			this.isEndOfWord = false;
+			//this.isEndOfWord = false;
 			list.insert(edge);
 		}
 
