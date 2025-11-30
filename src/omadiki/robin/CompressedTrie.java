@@ -4,38 +4,82 @@ import omadiki.DictionaryWord;
 import omadiki.MinHeap;
 import omadiki.Pair;
 
+/**
+ * Implements a Compressed Trie data structure.
+ * <p>
+ * This structure optimizes a standard Trie by compressing sequences of nodes
+ * that have only a single child into a single edge labeled with the full
+ * substring. Edge storage and lookups are managed using a
+ * {@link RobinHoodHashing} hash table.
+ * </p>
+ */
 public class CompressedTrie {
-    // Node class representing each compressed trie node
+    /**
+     * Node class representing each compressed trie node.
+     * <p>
+     * Each node stores its outgoing edges in a hash table ({@link RobinHoodHashing})
+     * and tracks word completion and usage frequency.
+     * </p>
+     */
     protected static class CompressedTrieNode {
-        private final RobinHoodHashing hash; // Hash table storing compressed edges
-        private boolean isEndOfWord; // Marks if this node terminates a word
-        private int importance; // Usage counter for frequency tracking
+        /** Hash table storing compressed edges. */
+        private final RobinHoodHashing hash;
+        /** Marks if this node terminates a word. */
+        private boolean isEndOfWord;
+        /** Usage counter for frequency tracking and prediction. */
+        private int importance;
 
+        /**
+         * Constructs a new, empty {@code CompressedTrieNode}.
+         */
         public CompressedTrieNode() {
             hash = new RobinHoodHashing();
             isEndOfWord = false;
         }
 
-        // Inserts a compressed edge into the hash table
+        /**
+         * Inserts a compressed edge into the node's hash table.
+         *
+         * @param edge The compressed edge to insert.
+         */
         public void insertEdge(RobinHoodHashing.Edge edge) {
             hash.insert(edge);
         }
     }
 
+    /** The root node of the compressed trie. */
     CompressedTrieNode root;
 
+    /**
+     * Constructs an empty {@code CompressedTrie} with an initialized root node.
+     */
     public CompressedTrie() {
         root = new CompressedTrieNode(); // Initialize root node
     }
 
-    // Public search method
+    /**
+     * Searches for a word in the compressed trie.
+     * <p>
+     * If the word is found, its importance (usage counter) is incremented.
+     * </p>
+     *
+     * @param a The string (word) to search for.
+     * @return {@code true} if the word exists and is marked as an end-of-word,
+     * {@code false} otherwise.
+     */
     public boolean search(String a) {
         return searchRec(this.root, a);
     }
 
-    // Recursive search through compressed edges
+    /**
+     * Recursive helper for the search operation.
+     *
+     * @param node The current node to search from.
+     * @param word The remaining portion of the word to match.
+     * @return {@code true} if the word is found, {@code false} otherwise.
+     */
     private boolean searchRec(CompressedTrieNode node, String word) {
-        RobinHoodHashing.Edge parent = node.hash.getEdge(word);
+        RobinHoodHashing.Edge parent = node.hash.search(word);
 
         if (parent == null) { // No matching compressed edge
             return false;
@@ -43,20 +87,29 @@ public class CompressedTrie {
             boolean a = parent.child.isEndOfWord;
             if (a) parent.child.importance++; // Increase usage counter
             return a;
-        } else { // Partial match → traverse deeper
+        } else { // Partial match
             String common = word.substring(findCommon(parent.label, word));
             return searchRec(parent.child, common);
         }
     }
 
-    // Public insertion method
+    /**
+     * Inserts a word into the compressed trie.
+     *
+     * @param word The word to insert.
+     */
     public void insert(String word) {
         insertRec(this.root, word);
     }
 
-    // Recursive insertion with edge splitting
+    /**
+     * Recursive helper for the insertion operation, handling edge splitting.
+     *
+     * @param node The current node to insert from.
+     * @param word The remaining portion of the word to insert.
+     */
     private void insertRec(CompressedTrieNode node, String word) {
-        RobinHoodHashing.Edge parent = node.hash.getEdge(word);
+        RobinHoodHashing.Edge parent = node.hash.search(word);
 
         if (parent == null) { // No edge: create new
             CompressedTrieNode a = new CompressedTrieNode();
@@ -89,20 +142,33 @@ public class CompressedTrie {
             parent.child = new CompressedTrieNode();
 
             insertRec(parent.child, parentSubstring); // Reinsert old edge remainder
-            parent.child.hash.getEdge(parentSubstring).child = old;
+            parent.child.hash.search(parentSubstring).child = old;
 
             insertRec(parent.child, wordSubstring); // Insert new word remainder
         }
     }
 
-    // Public delete call
+    /**
+     * Deletes a word from the compressed trie by marking its end-of-word flag
+     * as false.
+     *
+     * @param word The word to delete.
+     * @return {@code true} if the word was successfully found and marked for deletion,
+     * {@code false} otherwise.
+     */
     public boolean delete(String word) {
         return deleteRec(this.root, word);
     }
 
-    // Recursive delete
+    /**
+     * Recursive helper for the delete operation.
+     *
+     * @param node The current node to search from.
+     * @param word The remaining portion of the word to match.
+     * @return {@code true} if the word was deleted, {@code false} otherwise.
+     */
     private boolean deleteRec(CompressedTrieNode node, String word) {
-        RobinHoodHashing.Edge parent = node.hash.getEdge(word);
+        RobinHoodHashing.Edge parent = node.hash.search(word);
 
         if (parent == null) {
             return false; // Word does not exist
@@ -118,13 +184,23 @@ public class CompressedTrie {
         }
     }
 
-    // Prints the full trie
+    /**
+     * Prints the full content of the compressed trie, including all stored words
+     * and their associated importance (frequency).
+     *
+     * @param e The {@code CompressedTrie} to print.
+     */
     public static void print(CompressedTrie e) {
         printRec(e.root, "");
         System.out.println();
     }
 
-    // Recursive print
+    /**
+     * Recursive helper to traverse the trie and print words.
+     *
+     * @param e The current node.
+     * @param word The word built up so far along the path to this node.
+     */
     private static void printRec(CompressedTrieNode e, String word) {
         if (e == null) {
             return;
@@ -140,7 +216,13 @@ public class CompressedTrie {
         }
     }
 
-    // Finds common prefix length between two strings
+    /**
+     * Finds the length of the common prefix between two strings.
+     *
+     * @param s1 The first string.
+     * @param s2 The second string.
+     * @return The length of the longest common prefix.
+     */
     private static int findCommon(String s1, String s2) {
         int i = 0;
         int minLen = Math.min(s1.length(), s2.length());
@@ -151,14 +233,22 @@ public class CompressedTrie {
         return i;
     }
 
-    // Finds node for given prefix and returns (node, remainder)
+    /**
+     * Given a prefix, it parses the trie until it finds the node that corresponds to that prefix.
+     * Sometimes an edge may contain characters that are not in the prefix prompted (e.g. prefix = "app", edge = "appl").
+     * So we need a way to get the remaining characters ("l" in this example), hence,
+     * it returns a Pair of the children of that node, along with a string that contains all remaining characters from that edge.
+     *
+     * @param prefix the prefix to search for.
+     * @return Pair of the child node and the remaining string.
+     */
     private Pair<CompressedTrieNode, String> getPrefix(String prefix) {
         String search = prefix;
         String remainder = "";
         CompressedTrieNode cur = this.root;
         RobinHoodHashing.Edge edge = null;
         while (cur != null) {
-            edge = cur.hash.getEdge(search);
+            edge = cur.hash.search(search);
             if (edge == null) {
                 cur = null;
                 break;
@@ -176,7 +266,14 @@ public class CompressedTrie {
         return new Pair<>(cur, remainder);
     }
 
-    // Returns k most frequent words starting with prefix
+    /**
+     * Retrieves the {@code k} most frequent words starting with the given prefix.
+     *
+     * @param prefix The starting prefix.
+     * @param k The maximum number of words to return. If k is non-positive (-1 in the implementation),
+     * all words with the prefix are returned.
+     * @return A {@link MinHeap} containing {@link DictionaryWord} objects (word and frequency).
+     */
     public MinHeap getWordsWithPrefix(String prefix, int k) {
         Pair<CompressedTrieNode, String> cur = getPrefix(prefix);
 
@@ -186,7 +283,13 @@ public class CompressedTrie {
         return heap;
     }
 
-    // Recursively collect words from subtree
+    /**
+     * Recursive helper to traverse the subtree and collect all words into the min-heap.
+     *
+     * @param node The current node to traverse from.
+     * @param word The word built up so far (including the prefix).
+     * @param heap The {@link MinHeap} to store the most frequent words.
+     */
     private void getWordsRec(CompressedTrieNode node, String word, MinHeap heap) {
         if (node == null) {
             return;
@@ -201,7 +304,13 @@ public class CompressedTrie {
         }
     }
 
-    // Predicts next letter based on highest avg frequency
+    /**
+     * Predicts the next letter based on the highest average frequency of words
+     * that follow the prefix.
+     *
+     * @param prefix The current input prefix.
+     * @return The predicted next character, or '\0' if no prediction can be made.
+     */
     public char predictNextLetter(String prefix) {
         Pair<CompressedTrieNode, String> pair = getPrefix(prefix);
         if (!pair.getRight().isEmpty()) {
@@ -225,7 +334,11 @@ public class CompressedTrie {
         return maxIndex == -1 ? '\0' : cur.hash.table[maxIndex].label.charAt(0);
     }
 
-    // Testing
+    /**
+     * A simple testing method demonstrating the functionality of the {@code CompressedTrie}.
+     *
+     * @param args Command line arguments (not used).
+     */
     public static void main(String[] args) {
         var a = new CompressedTrie();
 

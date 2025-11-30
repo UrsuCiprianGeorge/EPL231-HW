@@ -77,7 +77,7 @@ public class RobinHoodHashing {
      * @param s The string whose first character is used for searching.
      * @return The matching {@code Edge}, or {@code null} if not found.
      */
-    Edge getEdge(String s) {
+    Edge search(String s) {
         int index = hash(s);
         Edge e = table[index];
         if (e == null) return null;
