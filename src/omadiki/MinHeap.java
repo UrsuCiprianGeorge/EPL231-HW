@@ -61,7 +61,7 @@ public class MinHeap {
 
             if (!this.resize && index == capacity) {
                 // Fixed-capacity (Top-K) mode: Heap is full.
-                if (this.contents[1].getImportance() < word.getImportance()) {
+                if (this.contents[1].compare(word) < 0) {
                     // Case 1: New word is more important than the minimum. Replace the minimum.
                     this.deleteMin();
                     index--; // Slot previously occupied by the minimum is now available

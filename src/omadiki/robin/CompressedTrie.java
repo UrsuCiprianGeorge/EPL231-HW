@@ -313,6 +313,8 @@ public class CompressedTrie {
      */
     public char predictNextLetter(String prefix) {
         Pair<CompressedTrieNode, String> pair = getPrefix(prefix);
+        if (pair.getLeft() == null)
+            return '\0';
         if (!pair.getRight().isEmpty()) {
             return pair.getRight().charAt(0);
         }

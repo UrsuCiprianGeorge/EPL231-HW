@@ -43,7 +43,6 @@ public final class Main {
         parseLexicon(trie, dic);
         parseTxt(trie, txt);
 
-        CompressedTrie.print(trie);
         Menu.startMenu(trie);
 
     }

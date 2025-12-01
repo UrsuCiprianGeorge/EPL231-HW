@@ -78,6 +78,10 @@ public class RobinHoodHashing {
      * @return The matching {@code Edge}, or {@code null} if not found.
      */
     Edge search(String s) {
+        if (s.isEmpty()) {
+            return null;
+        }
+
         int index = hash(s);
         Edge e = table[index];
         if (e == null) return null;
@@ -85,7 +89,7 @@ public class RobinHoodHashing {
         if (e.label.charAt(0) == s.charAt(0)) return e;
 
         // Linear probing
-        for (int i = index; circularDiff(i, index) <= maxProbeLength; index = (index + 1) % capacity) {
+        for (int i = index; circularDiff(i, index) <= maxProbeLength+1; index = (index + 1) % capacity) {
             if (table[index] == null) break;
             if (!table[index].occupied) continue;
             if (table[index].label.charAt(0) == s.charAt(0)) return table[index];
@@ -133,7 +137,7 @@ public class RobinHoodHashing {
         size++;
 
         // Trigger rehash if load factor exceeds 90%
-        if (size >= (int) (capacity * 0.9f)) {
+        if (size >= (int) (capacity * 0.9f) && size < 26) {
             rehash();
         }
     }
