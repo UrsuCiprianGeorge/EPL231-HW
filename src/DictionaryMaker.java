@@ -1,10 +1,16 @@
+import omadiki.robin.CompressedTrie;
+
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.IOException;
 import java.nio.MappedByteBuffer;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.sql.Struct;
 import java.util.Random;
+import java.util.Scanner;
+
+import static omadiki.robin.CompressedTrie.print;
 
 public class DictionaryMaker {
 
@@ -35,16 +41,38 @@ public class DictionaryMaker {
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
+        Scanner sc = new Scanner(System.in);
+        System.out.println("1- Generate random Dictionary with fixed size length word");
+        System.out.println("2- Generate random Dictionary with random word length");
+        System.out.print("Enter Option:");
+        int tog = sc.nextInt(); // type of generation
+        CompressedTrie compressedTrie = new CompressedTrie();
 
-        random_dictionary_generator(wordlengths, letter);
+        switch (tog) {
+            case 1:
+                System.out.println("Enter Word length: ");
+                int len = sc.nextInt();
+                System.out.println("Enter how many words to be generated: ");
+                int num = sc.nextInt();
+                random_dictionary_generator_fixed(wordlengths,letter,len,num,compressedTrie);
+                print(compressedTrie);
+                break;
+            case 2:
+                System.out.println("Enter how many words to be generated: ");
+                int num2 = sc.nextInt();
+                random_dictionary_generator(wordlengths,letter,num2,compressedTrie);
+                print(compressedTrie);
+                break;
+        }
+
 
     }
 
-    public static void random_dictionary_generator_fixed(int[] wordlength, int[][] letter, int length) {
-
+    public static void random_dictionary_generator_fixed(int[] wordlength, int[][] letter, int length,int dictSize,CompressedTrie compressedTrie) {
+        StringBuilder sb = new StringBuilder();
         Random rand = new Random();
 
-        for (int i = 0; i < 100; i++) {
+        for (int i = 0; i < dictSize; i++) {
 
             for (int k = 0; k < length; k++) {
                 int j;
@@ -60,17 +88,20 @@ public class DictionaryMaker {
                     }
                     rnd -= letter[k][j];
                 }
+                sb.append((char) (j + 'a'));
 
-                System.out.print((char) (j + 'a'));
             }
-            System.out.println();
+            compressedTrie.insert(sb.toString());
+            System.out.println(sb.toString());
+            sb = new StringBuilder();
         }
     }
 
-    public static void random_dictionary_generator(int[] wordlength, int[][] letter) {
+    public static void random_dictionary_generator(int[] wordlength, int[][] letter,int dictSize,CompressedTrie compressedTrie) {
+        StringBuilder sb = new StringBuilder();
         Random rand = new Random();
 
-        for (int i = 0; i < 10000; i++) {
+        for (int i = 0; i < dictSize; i++) {
             int length;
 
             {
@@ -106,9 +137,14 @@ public class DictionaryMaker {
                     rnd -= letter[k][j];
                 }
 
-                //System.out.print((char) (j + 'a'));
+                sb.append((char) (j + 'a'));
             }
-            //System.out.println();
+            compressedTrie.insert(sb.toString());
+            System.out.println(sb.toString());
+            sb = new StringBuilder();
+
         }
     }
+
+
 }
