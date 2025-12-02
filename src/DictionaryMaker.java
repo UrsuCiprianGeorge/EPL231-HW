@@ -119,7 +119,7 @@ public class DictionaryMaker {
                     rnd -= wordlength[j];
                 }
 
-                length = j;
+                length = j+1;
             }
 
             for (int k = 0; k < length; k++) {
