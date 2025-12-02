@@ -108,23 +108,38 @@ public class CompressedTrie {
         long sum = 0;
 
         // Size of node fields (approximate)
-        sum += 4; // boolean isEndOfWord (JVM pads)
+        sum += 1; // boolean isEndOfWord
         sum += 4; // importance int
-        sum += 8; // reference to hash object
+        sum += 4; // reference to hash object
 
         // Size of RobinHoodHashing table
-        if (node.hash.table != null) {
-            for (int i = 0; i < node.hash.capacity; i++) {
-                var edge = node.hash.table[i];
+        RobinHoodHashing hash = node.hash;
+        if (hash.table != null) {
+
+            sum += 12; // capacity, size, maxProbeLen
+            sum += 8; // table reference
+
+            for (int i = 0; i < hash.capacity; i++) {
+                var edge = hash.table[i];
+
+                sum += 4; // edge pointer in table
+                sum += hash.capacity * 4; // size of hash table
 
                 if (edge != null) {
-                    // Edge object overhead
-                    sum += 12; // object header (approx)
+                    sum += 4; // reference to String
+                    sum += 1; // occupied field
+                    sum += 4; // pointer to child
 
-                    // Label string memory
-                    sum += 8; // reference to String
-                    sum += 12; // String header
-                    sum += edge.label.length() * 2; // 2 bytes per char
+                    String label = edge.label;
+                    // String fields: byte[] value ref (4) + int hash (4) + byte coder (1)
+                    sum += 4 + 4 + 1;
+
+                    // String internal byte array (label data)
+                    // Array length field (4) + N * C (characters * bytes-per-char)
+                    int bytesPerChar = label.length() > 0 && label.charAt(0) < 256 ? 1 : 2; // Simple heuristic for java
+
+                    // Add size of the character array object
+                    sum += 4 + ((long)label.length() * bytesPerChar);
 
                     // Recursive child memory
                     sum += getTotalMemory(edge.child);
