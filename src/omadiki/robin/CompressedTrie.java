@@ -22,11 +22,17 @@ public class CompressedTrie {
      * </p>
      */
     protected static class CompressedTrieNode {
-        /** Hash table storing compressed edges. */
+        /**
+         * Hash table storing compressed edges.
+         */
         private final RobinHoodHashing hash;
-        /** Marks if this node terminates a word. */
+        /**
+         * Marks if this node terminates a word.
+         */
         private boolean isEndOfWord;
-        /** Usage counter for frequency tracking and prediction. */
+        /**
+         * Usage counter for frequency tracking and prediction.
+         */
         private int importance;
 
         /**
@@ -47,8 +53,10 @@ public class CompressedTrie {
         }
     }
 
-    /** The root node of the compressed trie. */
-    CompressedTrieNode root;
+    /**
+     * The root node of the compressed trie.
+     */
+    public CompressedTrieNode root;
 
     /**
      * Constructs an empty {@code CompressedTrie} with an initialized root node.
@@ -92,6 +100,41 @@ public class CompressedTrie {
             return searchRec(parent.child, common);
         }
     }
+
+    public long getTotalMemory(CompressedTrieNode node) {
+
+        if (node == null) return 0;
+
+        long sum = 0;
+
+        // Size of node fields (approximate)
+        sum += 4; // boolean isEndOfWord (JVM pads)
+        sum += 4; // importance int
+        sum += 8; // reference to hash object
+
+        // Size of RobinHoodHashing table
+        if (node.hash.table != null) {
+            for (int i = 0; i < node.hash.capacity; i++) {
+                var edge = node.hash.table[i];
+
+                if (edge != null) {
+                    // Edge object overhead
+                    sum += 12; // object header (approx)
+
+                    // Label string memory
+                    sum += 8; // reference to String
+                    sum += 12; // String header
+                    sum += edge.label.length() * 2; // 2 bytes per char
+
+                    // Recursive child memory
+                    sum += getTotalMemory(edge.child);
+                }
+            }
+        }
+
+        return sum;
+    }
+
 
     /**
      * Inserts a word into the compressed trie.
@@ -198,7 +241,7 @@ public class CompressedTrie {
     /**
      * Recursive helper to traverse the trie and print words.
      *
-     * @param e The current node.
+     * @param e    The current node.
      * @param word The word built up so far along the path to this node.
      */
     private static void printRec(CompressedTrieNode e, String word) {
@@ -270,8 +313,8 @@ public class CompressedTrie {
      * Retrieves the {@code k} most frequent words starting with the given prefix.
      *
      * @param prefix The starting prefix.
-     * @param k The maximum number of words to return. If k is non-positive (-1 in the implementation),
-     * all words with the prefix are returned.
+     * @param k      The maximum number of words to return. If k is non-positive (-1 in the implementation),
+     *               all words with the prefix are returned.
      * @return A {@link MinHeap} containing {@link DictionaryWord} objects (word and frequency).
      */
     public MinHeap getWordsWithPrefix(String prefix, int k) {

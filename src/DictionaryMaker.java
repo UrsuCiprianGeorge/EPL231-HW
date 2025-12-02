@@ -55,13 +55,13 @@ public class DictionaryMaker {
                 System.out.println("Enter how many words to be generated: ");
                 int num = sc.nextInt();
                 random_dictionary_generator_fixed(wordlengths,letter,len,num,compressedTrie);
-                print(compressedTrie);
+                System.out.println("Bytes Used:"+compressedTrie.getTotalMemory(compressedTrie.root));
                 break;
             case 2:
                 System.out.println("Enter how many words to be generated: ");
                 int num2 = sc.nextInt();
                 random_dictionary_generator(wordlengths,letter,num2,compressedTrie);
-                print(compressedTrie);
+                System.out.println("Bytes Used:"+compressedTrie.getTotalMemory(compressedTrie.root));
                 break;
         }
 
