@@ -142,6 +142,8 @@ public class CompressedTrie {
      * @param word The word to insert.
      */
     public void insert(String word) {
+        if (word.isEmpty())
+            System.err.println("Tried to insert empty word in CompressedTrie!");
         insertRec(this.root, word);
     }
 
