@@ -12,6 +12,19 @@ public class Trie {
     public Trie() {
         this.head = new Node();
     }
+    public long getTotalMemory(Trie.Node node){
+
+        if(node == null) return 0;
+        long sum=0;
+        sum+=1; // 1 byte isEndOfWord
+        sum+=4; // pointer to array
+        sum+=26*4; //sizeof children
+        for(int i=0; i<SIZE; i++) {
+            sum += getTotalMemory(node.children[i]);
+        }
+        return sum;
+
+    }
 
     public void insert(String s) {
 

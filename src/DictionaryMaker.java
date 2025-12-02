@@ -47,6 +47,7 @@ public class DictionaryMaker {
         System.out.print("Enter Option:");
         int tog = sc.nextInt(); // type of generation
         CompressedTrie compressedTrie = new CompressedTrie();
+        Trie trie = new Trie();
 
         switch (tog) {
             case 1:
@@ -55,6 +56,7 @@ public class DictionaryMaker {
                 System.out.println("Enter how many words to be generated: ");
                 int num = sc.nextInt();
                 random_dictionary_generator_fixed(wordlengths,letter,len,num,compressedTrie);
+
                 System.out.println("Bytes Used:"+compressedTrie.getTotalMemory(compressedTrie.root));
                 break;
             case 2:
