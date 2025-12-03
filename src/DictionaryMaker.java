@@ -3,17 +3,17 @@ import omadiki.robin.CompressedTrie;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.IOException;
-import java.nio.MappedByteBuffer;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.sql.Struct;
 import java.util.Random;
 import java.util.Scanner;
 
-import static omadiki.robin.CompressedTrie.print;
-
 public class DictionaryMaker {
     private static final Random rnd = new Random();
+
+    private static final int TRIALS[] = {5000, 10000, 25000, 50000, 75000, 100000, 150000, 200000, 250000, 500000, 750000, 1000000};
+    private static final long[][] MEAN_COMPRESSED = new long[TRIALS.length][60];
+    private static final long[][] MEAN_TRIE = new long[TRIALS.length][60];
 
     public static void main(String[] args) {
         File wordsFile = new File(args[0]);
@@ -53,29 +53,54 @@ public class DictionaryMaker {
         System.out.print("Enter Option:");
         int tog = sc.nextInt(); // type of generation
 
-        int words[]={5000,10000,25000,50000,75000,100000,150000,200000,250000,500000,750000,1000000};
-        for(int i=0;i<words.length;i++) {
-            CompressedTrie compressedTrie = new CompressedTrie();
-            Trie trie = new Trie();
-        switch (tog) {
-            case 1:
-                //System.out.println("Enter Word length: ");
-                //int len = sc.nextInt();
-               // System.out.println("Enter how many words to be generated: ");
-                //int num = sc.nextInt();
-                random_dictionary_generator_fixed(wordlengths, letter, 9, words[i],trie);
 
-               // System.out.println("Bytes Used:" + compressedTrie.getTotalMemory(compressedTrie.root));
-                System.out.println(trie.getTotalMemory(trie.head));
-                break;
-            case 2:
-               // System.out.println("Enter how many words to be generated: ");
-               // int num2 = sc.nextInt();
-                random_dictionary_generator(wordlengths, letter, words[i],trie);
-                //System.out.println("Bytes Used:" + compressedTrie.getTotalMemory(compressedTrie.root));
-                System.out.println(trie.getTotalMemory(trie.head));
-                break;
-        }
+        for (int i = 0; i < TRIALS.length; i++) {
+            switch (tog) {
+                case 1: {
+                    CompressedTrie compressedTrie = new CompressedTrie();
+                    Trie trie = new Trie();
+                    //System.out.println("Enter Word length: ");
+                    //int len = sc.nextInt();
+                    // System.out.println("Enter how many words to be generated: ");
+                    //int num = sc.nextInt();
+                    random_dictionary_generator_fixed(wordlengths, letter, 9, TRIALS[i], trie);
+
+                    // System.out.println("Bytes Used:" + compressedTrie.getTotalMemory(compressedTrie.root));
+                    System.out.println(trie.getTotalMemory(trie.head));
+                    break;
+                } case 2: {
+                    long sum_trie = 0;
+                    long sum_compressed = 0;
+                    CompressedTrie compressedTrie;
+                    Trie trie;
+
+                    for (int j = 0; j < 60; j++) {
+                        compressedTrie = new CompressedTrie();
+                        trie = new Trie();
+                        random_dictionary_generator(wordlengths, letter, TRIALS[i], trie, compressedTrie);
+
+                        sum_compressed += compressedTrie.getTotalMemory(compressedTrie.root);
+                        sum_trie += trie.getTotalMemory(trie.head);
+                    }
+
+                    double mean_trie = sum_trie / 60d;
+                    double mean_compressed = sum_compressed / 60d;
+
+                    System.out.println(mean_trie + "\t" + mean_compressed);
+
+                    break;
+                }
+                    // System.out.println("Enter how many words to be generated: ");
+                    // int num2 = sc.nextInt();
+
+                    //System.out.println("Bytes Used:" + compressedTrie.getTotalMemory(compressedTrie.root));
+                    //System.out.println(trie.getTotalMemory(trie.head));
+
+
+
+
+
+            }
 
         }
 
@@ -124,23 +149,23 @@ public class DictionaryMaker {
     }
 
 
-    public static void random_dictionary_generator(int[] wordlength, int[][] letter, int dictSize, Trie compressedTrie) {
+    public static void random_dictionary_generator(int[] wordlength, int[][] letter, int dictSize, Trie trie, CompressedTrie ctrie) {
         StringBuilder sb = new StringBuilder();
         Random rand = new Random();
         int sum1 = 0;
-        for(int i = 0; i < wordlength.length; i++) {
+        for (int i = 0; i < wordlength.length; i++) {
             sum1 += wordlength[i];
         }
         double sum = 0;
-        for (int i = 0 ; i <wordlength.length;i++) sum += i*(double)wordlength[i]/sum1;
-        double mean = sum ;
-        double sigma=0;
-        for(int i = 0; i < wordlength.length; i++) {
-            sigma=Math.pow(wordlength[i]-mean,2);
+        for (int i = 0; i < wordlength.length; i++) sum += i * (double) wordlength[i] / sum1;
+        double mean = sum;
+        double sigma = 0;
+        for (int i = 0; i < wordlength.length; i++) {
+            sigma = Math.pow(wordlength[i] - mean, 2);
         }
-        sigma=sigma/wordlength.length-1;
+        sigma = sigma / wordlength.length - 1;
         //System.out.println(mean);
-       // System.out.println(sigma);
+        // System.out.println(sigma);
 
         for (int i = 0; i < dictSize; i++) {
 
@@ -171,7 +196,8 @@ public class DictionaryMaker {
                 sb.append((char) (j + 'a'));
             }
 
-            compressedTrie.insert(sb.toString());
+            trie.insert(sb.toString());
+            ctrie.insert(sb.toString());
             //System.out.println(sb.toString());
             sb.setLength(0);
         }
