@@ -31,6 +31,11 @@ public class DictionaryMaker {
         try (BufferedReader reader = Files.newBufferedReader(Path.of(wordsFile.toURI()))) {
             String line;
             while ((line = reader.readLine()) != null) {
+                if (line.isEmpty() || line.matches(".*[^A-Za-z].*")) {
+                    continue;
+                }
+                line = line.toLowerCase();
+
                 lines++;
                 int size = line.length();
                 wordlengths[size - 1]++;
