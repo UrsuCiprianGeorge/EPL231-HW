@@ -22,14 +22,19 @@ public class DictionaryMaker {
         }
 
 
-        int[] wordlengths = new int[31];
-        int[][] letter = new int[31][26];
+        int[] wordlengths = new int[45];
+        int[][] letter = new int[45][26];
 
         int lines = 0;
 
         try (BufferedReader reader = Files.newBufferedReader(Path.of(wordsFile.toURI()))) {
             String line;
             while ((line = reader.readLine()) != null) {
+                if (line.isEmpty() || line.matches(".*[^A-Za-z].*")) {
+                    continue;
+                }
+                line = line.toLowerCase();
+
                 lines++;
                 int size = line.length();
                 wordlengths[size - 1]++;
@@ -41,6 +46,12 @@ public class DictionaryMaker {
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
+
+        System.out.println("Lines: " + lines);
+        for (int a : wordlengths)
+            System.out.print(a + "  ");
+        System.out.println();
+
         Scanner sc = new Scanner(System.in);
         System.out.println("1- Generate random Dictionary with fixed size length word");
         System.out.println("2- Generate random Dictionary with random word length");
