@@ -200,21 +200,4 @@ public class DictionaryMaker {
             sb.setLength(0);
         }
     }
-
-
 }
-//
-//entered
-//        entered
-//entered
-//        entered
-//entered
-//        entered
-//entered
-//        entered
-//entered
-//        entered
-//entered
-//        entered
-//entered
-//        entered
