@@ -1,17 +1,41 @@
-
+/**
+ * A simple Trie implementation supporting insertion,
+ * search, deletion, display, and memory estimation.
+ */
 public class Trie {
+    /** Number of possible child nodes (a-z). */
     private static int SIZE = 26;
 
+    /**
+     * Represents a single Trie node storing child pointers and
+     * a flag indicating whether the node terminates a valid word.
+     */
     protected class Node {
+        /** Array of child nodes indexed by character. */
         Node[] children = new Node[SIZE];
+        /** Flag to indicate that this node represents the end of a word. */
         boolean isEndOfWord = false;
     }
 
+    /** Root node of the Trie. */
     protected Node head;
 
+    /**
+     * Constructs an empty Trie.
+     */
     public Trie() {
         this.head = new Node();
     }
+
+    /**
+     * Estimates the total memory used by the Trie starting from a given node.
+     * <p>
+     * Note that this is not an accurate JVM memory measurement but rather
+     * a conceptual approximation based on assumed byte sizes.
+     *
+     * @param node the node to start memory calculation from
+     * @return an estimated number of bytes used by this subtree
+     */
     public long getTotalMemory(Trie.Node node){
 
         if(node == null) return 0;
@@ -26,6 +50,11 @@ public class Trie {
 
     }
 
+    /**
+     * Inserts a string into the Trie.
+     *
+     * @param s the string to insert
+     */
     public void insert(String s) {
 
         int c;
@@ -43,6 +72,12 @@ public class Trie {
         n.isEndOfWord = true;
     }
 
+    /**
+     * Searches the Trie for a given string.
+     *
+     * @param s the string to search
+     * @return true if the string exists in the Trie; false otherwise
+     */
     public boolean search(String s) {
         int c;
         Node n = this.head;
@@ -59,10 +94,22 @@ public class Trie {
         return n.isEndOfWord;
     }
 
+    /**
+     * Displays all words stored in the Trie.
+     *
+     * @param trie the Trie to display
+     */
     public static void display(Trie trie) {
         displayRec(trie.head, "");
     }
 
+    /**
+     * Recursive helper to display words stored in a Trie.
+     *
+     * @param n current node
+     * @param s current accumulated prefix
+     * @return the prefix if this node ends a word; otherwise an empty string
+     */
     private static String displayRec(Node n, String s) {
         if (n == null)
             return "";
@@ -83,10 +130,27 @@ public class Trie {
         return s;
     }
 
+    /**
+     * Deletes a key from the Trie.
+     * <p>
+     * Note: This implementation appears incomplete and may not fully remove
+     * all unused nodes.
+     *
+     * @param key the string to delete
+     * @return true if deletion was successful; false otherwise
+     */
     public boolean delete(String key) {
         return deleteRec(this.head, key, 0);
     }
 
+    /**
+     * Recursive helper for deleting a key from the Trie.
+     *
+     * @param n current node
+     * @param key the string to delete
+     * @param depth current depth into the key
+     * @return true if successfully deleted; false otherwise
+     */
     private boolean deleteRec(Node n, String key, int depth) {
         if (n == null)
             return false;
@@ -115,6 +179,9 @@ public class Trie {
         return true;
     }
 
+    /**
+     * Simple test routine.
+     */
     public static void main(String[] args) {
         var a = new Trie();
 
